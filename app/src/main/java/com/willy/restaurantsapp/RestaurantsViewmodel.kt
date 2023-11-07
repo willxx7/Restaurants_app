@@ -1,6 +1,5 @@
 package com.willy.restaurantsapp
 
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -24,11 +23,24 @@ class RestaurantsViewModel : ViewModel() {
         RestaurantDb.getDaoInstance(RestaurantApplication.getAppContext())
 
 
-    val state: MutableState<List<Restaurant>> = mutableStateOf(emptyList<Restaurant>())
+    val state = mutableStateOf(
+        RestaurantScreenState(
+            restaurants = listOf(),
+            isLoading = true
+        )
+
+    )
 
     private val errorHandler = CoroutineExceptionHandler { _, exception ->
 
         exception.printStackTrace()
+        state.value = state.value.copy(
+            error = exception.message,
+            isLoading = false
+
+
+        )
+
 
 
     }
@@ -51,7 +63,14 @@ class RestaurantsViewModel : ViewModel() {
 
         viewModelScope.launch(errorHandler) {
 
-            state.value = getAllRestaurants()
+            val restaurants = getAllRestaurants()
+
+            state.value = state.value.copy(
+                restaurants = restaurants,
+                isLoading = false
+
+
+            )
 
 
         }
@@ -68,15 +87,17 @@ class RestaurantsViewModel : ViewModel() {
                 when (e) {
                     is UnknownHostException,
                     is ConnectException,
-                    is HttpException -> {
+                    is HttpException,
+                    -> {
                         if (restaurantsDao.getAll().isEmpty())
                             throw Exception(
                                 "Something went wrong. " +
-                                        "We have no data")
-
+                                        "We have no data"
+                            )
 
 
                     }
+
                     else -> throw e
 
                 }
@@ -107,14 +128,14 @@ class RestaurantsViewModel : ViewModel() {
     fun toggleFavorite(id: Int, oldValue: Boolean) {
         viewModelScope.launch(errorHandler) {
             val updatedRestaurants = toggleFavoriteRestaurant(id, oldValue)
-            state.value = updatedRestaurants
+            state.value = state.value.copy(restaurants = updatedRestaurants)
         }
 
     }
 
     private suspend fun toggleFavoriteRestaurant(
         id: Int,
-        oldValue: Boolean
+        oldValue: Boolean,
     ) = withContext(Dispatchers.IO) {
 
         restaurantsDao.update(PartialRestaurant(id = id, isFavorite = !oldValue))

@@ -33,8 +33,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 fun RestaurantsScreen(onItemClick: (id: Int) -> Unit = {}) {
 
     val viewModel: RestaurantsViewModel = viewModel()
-    val restaurants = viewModel.state.value
-    val isLoading = restaurants.isEmpty()
+
+    val state = viewModel.state.value
+
 
 
 
@@ -49,7 +50,7 @@ fun RestaurantsScreen(onItemClick: (id: Int) -> Unit = {}) {
                 vertical = 8.dp
             )
         ) {
-            items(restaurants) { restaurant ->
+            items(state.restaurants) { restaurant ->
 
                 RestaurantItem(
                     restaurant,
@@ -60,10 +61,15 @@ fun RestaurantsScreen(onItemClick: (id: Int) -> Unit = {}) {
             }
 
         }
-        if (isLoading){
-
+        if (state.isLoading)
             CircularProgressIndicator()
-        }
+
+        if(state.error != null)
+            Text(state.error)
+
+
+
+
 
 
     }
