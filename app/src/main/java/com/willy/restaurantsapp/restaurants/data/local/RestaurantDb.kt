@@ -1,4 +1,4 @@
-package com.willy.restaurantsapp
+package com.willy.restaurantsapp.restaurants.data.local
 
 import android.content.Context
 import androidx.room.Database
@@ -7,8 +7,8 @@ import androidx.room.RoomDatabase
 
 
 @Database(
-    entities = [Restaurant::class],
-    version = 2,
+    entities = [LocalRestaurant::class],
+    version = 3,
     exportSchema = false
 )
 abstract class RestaurantDb : RoomDatabase() {

@@ -1,9 +1,11 @@
-package com.willy.restaurantsapp
+package com.willy.restaurantsapp.restaurants.presentation.details
 
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.willy.restaurantsapp.restaurants.data.remote.RestaurantsApiService
+import com.willy.restaurantsapp.restaurants.domain.Restaurant
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -38,7 +40,14 @@ class RestaurantDetailsViewModel(private val stateHandle: SavedStateHandle) : Vi
         return withContext(Dispatchers.IO) {
             val responseMap = restInterface.getRestaurant(id)
 
-            return@withContext responseMap.values.first()
+            return@withContext responseMap.values.first() .let {
+
+                Restaurant(
+                    id = it.id,
+                    title = it.title,
+                    description =  it.description
+                )
+            }
 
         }
 

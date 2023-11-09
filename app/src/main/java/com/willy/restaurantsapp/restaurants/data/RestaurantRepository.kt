@@ -1,5 +1,11 @@
-package com.willy.restaurantsapp
+package com.willy.restaurantsapp.restaurants.data
 
+import com.willy.restaurantsapp.RestaurantApplication
+import com.willy.restaurantsapp.restaurants.data.local.LocalRestaurant
+import com.willy.restaurantsapp.restaurants.data.local.PartialLocalRestaurant
+import com.willy.restaurantsapp.restaurants.data.local.RestaurantDb
+import com.willy.restaurantsapp.restaurants.data.remote.RestaurantsApiService
+import com.willy.restaurantsapp.restaurants.domain.Restaurant
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.HttpException
@@ -53,12 +59,21 @@ class RestaurantRepository {
 
         val favoriteRestaurants = restaurantsDao.getAllFavorited()
 
-        restaurantsDao.addAll(remoteRestaurants)
+        restaurantsDao.addAll(remoteRestaurants.map{
+            LocalRestaurant(
+                it.id,
+                it.title,
+                it.description,
+                false
+
+            )
+
+        })
 
         restaurantsDao.updateAll(
             favoriteRestaurants.map {
 
-                PartialRestaurant(it.id, true)
+                PartialLocalRestaurant(it.id, true)
             }
         )
 
@@ -71,7 +86,7 @@ class RestaurantRepository {
         value: Boolean,
     ) = withContext(Dispatchers.IO) {
 
-        restaurantsDao.update(PartialRestaurant(id = id, isFavorite = value))
+        restaurantsDao.update(PartialLocalRestaurant(id = id, isFavorite = value))
 
 
 
@@ -80,7 +95,15 @@ class RestaurantRepository {
 
         return withContext(Dispatchers.IO){
 
-           return@withContext restaurantsDao.getAll()
+           return@withContext restaurantsDao.getAll().map{
+
+               Restaurant(
+                   it.id,
+                   it.title,
+                   it.description
+
+               )
+           }
         }
 
     }

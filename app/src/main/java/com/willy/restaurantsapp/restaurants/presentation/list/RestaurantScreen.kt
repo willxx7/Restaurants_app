@@ -1,4 +1,4 @@
-package com.willy.restaurantsapp
+package com.willy.restaurantsapp.restaurants.presentation.list
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -25,16 +25,21 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import com.willy.restaurantsapp.restaurants.domain.Restaurant
+import com.willy.restaurantsapp.ui.theme.RestaurantsAppTheme
 
 
 @Composable
-fun RestaurantsScreen(onItemClick: (id: Int) -> Unit = {}) {
+fun RestaurantsScreen(
 
-    val viewModel: RestaurantsViewModel = viewModel()
+    state: RestaurantScreenState,
+    onItemClick: (id: Int) -> Unit,
+    onFavoriteClick: (id: Int, oldValue: Boolean) -> Unit,
+) {
 
-    val state = viewModel.state.value
+
 
 
 
@@ -56,7 +61,7 @@ fun RestaurantsScreen(onItemClick: (id: Int) -> Unit = {}) {
 
                 RestaurantItem(
                     restaurant,
-                    onFavoriteClick = { id, oldValue -> viewModel.toggleFavorite(id, oldValue) },
+                    onFavoriteClick = { id, oldValue -> onFavoriteClick(id,oldValue) },
                     onItemClick = { id -> onItemClick(id) })
 
 
@@ -187,13 +192,19 @@ fun RestaurantDetails(
 //}
 
 
-//@Preview(showBackground = true)
-//@Composable
-//fun DefaultPreview() {
-//    RestaurantsAppTheme {
-//        RestaurantScreen()
-//    }
-//
-//
-//}
+@Preview(showBackground = true)
+@Composable
+fun DefaultPreview() {
+    RestaurantsAppTheme {
+        RestaurantsScreen(
+
+            RestaurantScreenState(
+                listOf(),true),
+            {},
+            { _ , _ -> }
+        )
+    }
+
+
+}
 

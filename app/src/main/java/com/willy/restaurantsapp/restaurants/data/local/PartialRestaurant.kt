@@ -1,10 +1,10 @@
-package com.willy.restaurantsapp
+package com.willy.restaurantsapp.restaurants.data.local
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 
 @Entity
-class PartialRestaurant(
+class PartialLocalRestaurant(
 
     @ColumnInfo(name = "r_id")
     val id: Int,

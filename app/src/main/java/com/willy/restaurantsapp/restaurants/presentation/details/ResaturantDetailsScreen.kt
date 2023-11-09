@@ -1,4 +1,4 @@
-package com.willy.restaurantsapp
+package com.willy.restaurantsapp.restaurants.presentation.details
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.Column
@@ -8,12 +8,13 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCompositionContext
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.willy.restaurantsapp.restaurants.presentation.list.RestaurantDetails
+import com.willy.restaurantsapp.restaurants.presentation.list.RestaurantIcon
 
 @Composable
 fun RestaurantDetailsScreen() {

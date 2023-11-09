@@ -1,4 +1,6 @@
-package com.willy.restaurantsapp
+package com.willy.restaurantsapp.restaurants.domain
+
+import com.willy.restaurantsapp.restaurants.data.RestaurantRepository
 
 class ToggleRestaurantUseCase {
     private val repository: RestaurantRepository = RestaurantRepository()

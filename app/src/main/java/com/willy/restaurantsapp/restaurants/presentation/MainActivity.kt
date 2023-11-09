@@ -1,27 +1,19 @@
-package com.willy.restaurantsapp
+package com.willy.restaurantsapp.restaurants.presentation
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
+import com.willy.restaurantsapp.restaurants.presentation.details.RestaurantDetailsScreen
+import com.willy.restaurantsapp.restaurants.presentation.list.RestaurantsScreen
+import com.willy.restaurantsapp.restaurants.presentation.list.RestaurantsViewModel
 import com.willy.restaurantsapp.ui.theme.RestaurantsAppTheme
 
 
@@ -48,9 +40,23 @@ class MainActivity : ComponentActivity() {
         NavHost(navController, startDestination = "restaurants") {
 
             composable(route = "restaurants") {
-                RestaurantsScreen { id ->
-                    navController.navigate("restaurants/$id")
-                }
+
+                val viewModel: RestaurantsViewModel = viewModel()
+                RestaurantsScreen(
+
+                    state = viewModel.state.value,
+                    onItemClick = { id ->
+
+                        navController.navigate("restaurants/$id")
+                    },
+                    onFavoriteClick = { id, oldValue ->
+                        viewModel.toggleFavorite(id, oldValue)
+
+
+                    }
+                )
+                navController.navigate("restaurants/$id")
+
             }
 
             composable(
@@ -78,44 +84,6 @@ class MainActivity : ComponentActivity() {
 
 }
 
-
-@Composable
-fun ClickableButton() {
-
-    Button(
-        onClick = { /*TODO*/ },
-        colors = ButtonDefaults.buttonColors(
-            backgroundColor = Color.Black,
-            contentColor = Color.Magenta
-        ),
-        shape = MaterialTheme.shapes.medium
-    ) {
-        Text("Press Me!")
-
-    }
-
-
-}
-
-@Composable
-fun MyFloatingActionButton() {
-
-    Box {
-        Surface(
-
-            modifier = Modifier.size(50.dp),
-            color = Color.Green,
-            content = {},
-            shape = CircleShape
-        )
-        Text(
-            text = "+",
-            modifier = Modifier.align(Alignment.Center)
-        )
-    }
-
-
-}
 
 //@Preview(showBackground = true)
 //@Composable
