@@ -19,7 +19,7 @@ class RestaurantRepository {
     private var restaurantsDao =
         RestaurantDb.getDaoInstance(RestaurantApplication.getAppContext())
 
-    suspend fun getAllRestaurants(): List<Restaurant> {
+    suspend fun loadRestaurants() {
         return withContext(Dispatchers.IO) {
             try {
                 refreshCache()
@@ -44,7 +44,6 @@ class RestaurantRepository {
                 }
             }
 
-            return@withContext restaurantsDao.getAll()
         }
     }
 
@@ -69,12 +68,20 @@ class RestaurantRepository {
 
     suspend fun toggleFavoriteRestaurant(
         id: Int,
-        oldValue: Boolean,
+        value: Boolean,
     ) = withContext(Dispatchers.IO) {
 
-        restaurantsDao.update(PartialRestaurant(id = id, isFavorite = !oldValue))
-        restaurantsDao.getAll()
+        restaurantsDao.update(PartialRestaurant(id = id, isFavorite = value))
 
+
+
+    }
+    suspend fun getRestaurants(): List<Restaurant>{
+
+        return withContext(Dispatchers.IO){
+
+           return@withContext restaurantsDao.getAll()
+        }
 
     }
 

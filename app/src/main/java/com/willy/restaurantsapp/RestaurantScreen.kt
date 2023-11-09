@@ -40,8 +40,10 @@ fun RestaurantsScreen(onItemClick: (id: Int) -> Unit = {}) {
 
 
 
-    Box(contentAlignment = Alignment.Center,
-        modifier = Modifier.fillMaxSize()) {
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = Modifier.fillMaxSize()
+    ) {
 
 
         LazyColumn(
@@ -64,16 +66,11 @@ fun RestaurantsScreen(onItemClick: (id: Int) -> Unit = {}) {
         if (state.isLoading)
             CircularProgressIndicator()
 
-        if(state.error != null)
+        if (state.error != null)
             Text(state.error)
 
 
-
-
-
-
     }
-
 
 }
 

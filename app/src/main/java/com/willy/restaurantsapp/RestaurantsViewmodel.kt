@@ -1,5 +1,6 @@
 package com.willy.restaurantsapp
 
+import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -9,13 +10,12 @@ import kotlinx.coroutines.launch
 
 class RestaurantsViewModel : ViewModel() {
 
-    private val repository = RestaurantRepository()
+
+    private val getRestaurantsUseCase = GetInitialRestaurantsUseCase()
+    private val toggleRestaurantsUseCase = ToggleRestaurantUseCase()
 
 
-
-
-
-    val state = mutableStateOf(
+    private val _state = mutableStateOf(
         RestaurantScreenState(
             restaurants = listOf(),
             isLoading = true
@@ -23,10 +23,13 @@ class RestaurantsViewModel : ViewModel() {
 
     )
 
+    val state: State<RestaurantScreenState>
+        get() = _state
+
     private val errorHandler = CoroutineExceptionHandler { _, exception ->
 
         exception.printStackTrace()
-        state.value = state.value.copy(
+        _state.value = _state.value.copy(
             error = exception.message,
             isLoading = false
 
@@ -34,19 +37,20 @@ class RestaurantsViewModel : ViewModel() {
         )
 
 
-
     }
 
 
-    init { getRestaurants() }
+    init {
+        getRestaurants()
+    }
 
     private fun getRestaurants() {
 
         viewModelScope.launch(errorHandler) {
 
-            val restaurants = repository.getAllRestaurants()
+            val restaurants = getRestaurantsUseCase()
 
-            state.value = state.value.copy(
+            _state.value = _state.value.copy(
                 restaurants = restaurants,
                 isLoading = false
 
@@ -60,17 +64,13 @@ class RestaurantsViewModel : ViewModel() {
     }
 
 
-
-
-
     fun toggleFavorite(id: Int, oldValue: Boolean) {
         viewModelScope.launch(errorHandler) {
-            val updatedRestaurants = repository.toggleFavoriteRestaurant(id, oldValue)
-            state.value = state.value.copy(restaurants = updatedRestaurants)
+            val updatedRestaurants = toggleRestaurantsUseCase(id, oldValue)
+            _state.value = _state.value.copy(restaurants = updatedRestaurants)
         }
 
     }
-
 
 
 //    private fun storeSelection(item: Restaurant) {
